@@ -1,5 +1,4 @@
 let slots = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-slots = slots.sort(() => 0.5 - Math.random())
 slots.push(null)
 console.log(slots)
 
@@ -27,18 +26,72 @@ const canSwap = (indexa,indexb) => {
     return allowSwap
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+}
+
+/*
+    I was going to use the algorithm on David's code, but I think I am going to take a different approach now. 
+    Let's think about how shuffling a slide puzzle works. When we begin
+        1. We find the empty slot
+        2. Decide which pice we want to fill the empty slot, only choosing from the adjacent pieces that are perpendicular to the empty slot
+        3. Pick the pice and swap with it
+        4. Do this n times to "shuffle" the puzzle.
+
+    This is analogous to doing it by hand.
+*/
+let shuffleMoveCount = 10
+let emptySlotIndex = slots.length - 1
+const shuffleTruffle = (board) => {
+    let arr = board
+    for(let i = 0; i < shuffleMoveCount; i++){ //Do this n times
+        //calculate which indexes are adjacent and store them in an array
+        let adjacent = []
+        if(emptySlotIndex - 4 >= 0){
+            adjacent.push(emptySlotIndex - 4)
+        }
+        if(emptySlotIndex + 4 <= 15){
+            adjacent.push(emptySlotIndex + 4)
+        }
+        
+        if(emptySlotIndex - 1 >= 0){
+            adjacent.push(emptySlotIndex - 1)
+        }
+        if(emptySlotIndex + 1 <= 15){
+            adjacent.push(emptySlotIndex + 1)
+        }
+
+        //choose a random one in the array
+        let randomAdjacent = adjacent[getRandomInt(0,adjacent.length)]
+        
+        //swap with the emptySlotIndex 
+        arr[emptySlotIndex] = arr[randomAdjacent]
+        arr[randomAdjacent] = null
+
+        //update the emptySlotIndex
+        emptySlotIndex = randomAdjacent
+    }
+    console.log(arr)
+    return arr
+}
+
 
 let selectedSlot = null
+slots = shuffleTruffle(slots)
+
 slots.forEach((slot,index)=>{
     
     let newSlot = document.createElement('div')
     if(slot !== null){
         newSlot.classList.add('slot')
-        //width and height 100px
-        //calculate x position
-        let l = Math.floor(index / 4) * 100
-        //calculate y position 
-        let t = (index % 4) * 100
+
+        // calculate y position
+        let t = Math.floor(index / 4) * 100
+        //calculate x position 
+        let l = (index % 4) * 100
 
         newSlot.style.position = 'absolute'
         newSlot.style.left = l + 'px'
@@ -47,11 +100,11 @@ slots.forEach((slot,index)=>{
         document.getElementById('container').appendChild(newSlot)
     }else{
         newSlot.classList.add('empty_slot')
-        //width and height 100px
-        //calculate x position
-        let l = Math.floor(index / 4) * 100 
+                
+        //calculate y position
+        let t = Math.floor(index / 4) * 100 
         //calculate y position 
-        let t = (index % 4) * 100 
+        let l = (index % 4) * 100 
 
         newSlot.style.position = 'absolute'
         newSlot.style.left = l + 'px'
@@ -94,7 +147,7 @@ slots.forEach((slot,index)=>{
 
 
 
-
+//Swap Method 
 // const init = () => {
 //     Array.from(slot_elems).forEach((slot_box,index)=>{
 //         slot_box.innerText = slots[index] ?? ''
