@@ -86,10 +86,27 @@ const shuffleTruffle = (board) => {
 
 const checkWin = () => {
     let currentSlots = document.getElementsByClassName('slot')
-
-    for(let i = 0; i < slots.length; i++){
-
-    }
+    setTimeout(()=>{
+        let sorted = Array.from(currentSlots).sort((a,b)=>{
+            let aleft = window.getComputedStyle(a).left
+            let atop = window.getComputedStyle(a).top
+            let bleft = window.getComputedStyle(b).left
+            let btop = window.getComputedStyle(b).top
+            if(atop > btop){
+                return 1 
+            }else if(atop === btop){
+                return aleft > bleft ? 1 : -1
+            }else{
+                return -1
+            }
+        }).map(a=>{
+            return Number(a.innerText)
+        })
+        let puzzleSolved = sorted.every((v, i) => (i === 0 || v <= sorted[i - 1])) || sorted.every((v, i) => (i === 0 || v >= sorted[i - 1]))
+        if(puzzleSolved){
+            alert("You have won the game!!!")
+        }
+    },1200)
 }
 
 let selectedSlot = null
@@ -147,6 +164,7 @@ slots.forEach((slot,index)=>{
                 slideEffect.play()
             }
             selectedSlot = null
+            checkWin()
         }
     }
 })
