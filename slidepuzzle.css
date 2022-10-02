@@ -10,6 +10,14 @@ body{
     background: radial-gradient(red, black);
 }
 
+.background_music_controls{
+    position: fixed;
+    top: 0px;
+    left: 0px;  
+    background: white;
+    border-bottom-right-radius: 20px;
+}
+
 #container{
     /* display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -21,7 +29,7 @@ body{
     height: 412px;
     border-radius: 8px;
     border: 6px groove blue;
-    animation: puzzleEnter 1s normal forwards ease-in-out;
+    animation: puzzleEnter 1s normal forwards ease-in-out, glow 1s linear 1s infinite alternate, breathe 5s linear 1s infinite alternate;
 }
 
 .slot{
@@ -71,6 +79,16 @@ body{
 
     to {
         transform: scale(1) rotateY(0deg);
+    }
+}
+
+@keyframes breathe {
+    from {
+        transform : scale(1);
+    }
+
+    to{
+        transform: scale(1.1);
     }
 }
 
